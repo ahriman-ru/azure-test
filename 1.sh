@@ -2,6 +2,9 @@
 declare -r MASTER_NAME=$1
 declare -r MASTER_IP=$2
 
+touch /tmp/wewerehere
+echo {MASTER_IP} > /tmp/wewereh
+
 configure_azure_files() >> /tmp/azurelog.txt
 configure_ssh_config() >> /tmp/sshconfiglog.txt
 configure_ssh_keygen() >> /tmp/sshconfiglog.txt
