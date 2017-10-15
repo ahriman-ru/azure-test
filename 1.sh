@@ -1,10 +1,10 @@
 #!/bin/bash
-declare -r MASTER_NAME=$1
-declare -r MASTER_IP=$2
+declare -r MASTER_IP=$1
+declare -r MASTER_NAME=$2
 
 sudo -u rfdmaster touch /tmp/sshlog.log
 sudo -u rfdmaster touch /tmp/ldaplog.log
-#echo 'rfdmaster ALL=(ALL:ALL) ALL' | sudo EDITOR='tee -a' visudo
+echo 'rfdmaster ALL=(ALL:ALL) ALL' | sudo EDITOR='tee -a' visudo
 sudo sh -c 'echo "$MASTER_IP $MASTER_NAME" >> /etc/hosts'
 
 echo "AZURE FILES CONFIGURATION:"
