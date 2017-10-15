@@ -2,8 +2,8 @@
 declare -r MASTER_NAME=$1
 declare -r MASTER_IP=$2
 
-touch /tmp/sshlog.log
-touch /tmp/ldaplog.log
+sudo -u rfdmaster touch /tmp/sshlog.log
+sudo -u rfdmaster touch /tmp/ldaplog.log
 #echo 'rfdmaster ALL=(ALL:ALL) ALL' | sudo EDITOR='tee -a' visudo
 sudo sh -c 'echo "$MASTER_IP $MASTER_NAME" >> /etc/hosts'
 
