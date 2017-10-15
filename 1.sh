@@ -3,6 +3,7 @@ declare -r MASTER_NAME=$1
 declare -r MASTER_IP=$2
 
 touch /tmp/sshlog.log
+touch /tmp/ldaplog.log
 #echo 'rfdmaster ALL=(ALL:ALL) ALL' | sudo EDITOR='tee -a' visudo
 sudo sh -c 'echo "$MASTER_IP $MASTER_NAME" >> /etc/hosts'
 
@@ -21,10 +22,10 @@ fi
 # Install sshpass to automate ssh-copy-id action
 sudo yum install -y epel-release
 sudo yum install -y sshpass
-sudo sshpass -p RFDCkjlysqGfhjkm1 ssh-copy-id -i /home/rfdmaster/.ssh/id_rsa.pub -o StrictHostKeyChecking=no rfdmaster@$MASTER_IP
+sudo sshpass -p RFDCkjlysqGfhjkm1 ssh-copy-id -i /home/rfdmaster/.ssh/id_rsa.pub -o StrictHostKeyChecking=no rfdmaster@$MASTER_IP >> /tmp/sshlog.log
 echo "DONE"
 
-cat /etc/hosts | sudo sshpass -p RFDCkjlysqGfhjkm1 ssh -StrictHostKeyChecking=no rfdmaster@$MASTER_IP "sudo sh -c 'cat > /etc/hosts'"
+cat /etc/hosts | sudo sshpass -p RFDCkjlysqGfhjkm1 ssh -StrictHostKeyChecking=no rfdmaster@$MASTER_IP "sudo sh -c 'cat > /etc/hosts'" >> /tmp/sshlog.log
 
-sudo authconfig --enableldap --enableldapauth --ldapserver=ldap://$MASTER_IP:389/ --ldapbasedn="dc=rfd,dc=com" --disablefingerprint --kickstart --update
+sudo authconfig --enableldap --enableldapauth --ldapserver=ldap://$MASTER_IP:389/ --ldapbasedn="dc=rfd,dc=com" --disablefingerprint --kickstart --update >> /tmp/ldaplog.log
 #ldapsearch -x -b "uid=rfdmaster,ou=people,dc=rfd,dc=com"
