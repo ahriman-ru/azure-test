@@ -1,6 +1,6 @@
 #!/bin/bash
 declare -r MASTER_IP=$1
-declare -r MASTER_NAME=$2
+declare -r MASTER_NAME='rfdmaster'
 
 sudo -u rfdmaster touch /tmp/sshlog.log
 sudo -u rfdmaster touch /tmp/ldaplog.log
