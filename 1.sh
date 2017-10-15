@@ -20,9 +20,9 @@ if ! [ -f /home/rfdmaster/.ssh/id_rsa ]; then
     sudo -u rfdmaster sh -c "ssh-keygen -f /home/rfdmaster/.ssh/id_rsa -t rsa -N ''" >> /tmp/sshlog.log
 fi
 # Install sshpass to automate ssh-copy-id action
-sudo yum install -y epel-release
-sudo yum install -y sshpass
-sudo sshpass -p RFDCkjlysqGfhjkm1 ssh-copy-id -i /home/rfdmaster/.ssh/id_rsa.pub -o StrictHostKeyChecking=no rfdmaster@$MASTER_IP >> /tmp/sshlog.log
+#sudo yum install -y epel-release
+#sudo yum install -y sshpass
+ sshpass -p RFDCkjlysqGfhjkm1 ssh-copy-id -i /home/rfdmaster/.ssh/id_rsa.pub -o StrictHostKeyChecking=no rfdmaster@$MASTER_IP >> /tmp/sshlog.log
 echo "DONE"
 
 cat /etc/hosts | sudo sshpass -p RFDCkjlysqGfhjkm1 ssh -StrictHostKeyChecking=no rfdmaster@$MASTER_IP "sudo sh -c 'cat > /etc/hosts'" >> /tmp/sshlog.log
