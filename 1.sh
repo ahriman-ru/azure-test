@@ -25,8 +25,8 @@ fi
 # Install sshpass to automate ssh-copy-id action
 sudo yum install -y epel-release
 sudo yum install -y sshpass
-sudo sshpass -p RFDCkjlysqGfhjkm1 ssh-copy-id -i /home/rfdmaster/.ssh/id_rsa.pub -o StrictHostKeyChecking=no rfdmaster@$MASTER_IP >> /tmp/sshlog.log
-echo "DONE" >> /tmp/sshlog.log
+sudo sshpass -p RFDCkjlysqGfhjkm1 ssh-copy-id -i /home/rfdmaster/.ssh/id_rsa.pub -o StrictHostKeyChecking=no rfdmaster@$MASTER_IP
+echo "DONE"
 
 cat /etc/hosts | ssh rfdmaster@$MASTER_IP "sudo sh -c 'cat > /etc/hosts'"
 
