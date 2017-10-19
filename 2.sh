@@ -15,7 +15,7 @@ echo $MASTER_NAME >> /tmp/main.log
 ###torque installation
 
 echo 'rfdmaster ALL=(ALL:ALL) ALL' | sudo EDITOR='tee -a' visudo
-echo "$MASTER_IP $MASTER_NAME" >> /etc/hosts
+sudo sh -c "echo '$MASTER_IP $MASTER_NAME' >> /etc/hosts"
 
 echo "AZURE FILES CONFIGURATION:"
 mkdir -p /home/mnt
