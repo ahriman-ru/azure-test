@@ -1,13 +1,18 @@
 #!/bin/bash
 declare -r MASTER_IP=$1
 declare -r MASTER_NAME='rfdmaster'
+declare -r MASTER_PASSWORD='todo'
 
+#debug part
 sudo -u rfdmaster touch /tmp/sshlog.log
 sudo -u rfdmaster touch /tmp/ldaplog.log
 sudo -u rfdmaster touch /tmp/main.log
 
 echo $MASTER_IP >> /tmp/main.log
 echo $MASTER_NAME >> /tmp/main.log
+####
+
+###torque installation
 
 echo 'rfdmaster ALL=(ALL:ALL) ALL' | sudo EDITOR='tee -a' visudo
 echo "$MASTER_IP $MASTER_NAME" >> /etc/hosts
@@ -36,3 +41,10 @@ ssh -o 'StrictHostKeyChecking=no' '$MASTER_NAME@$MASTER_IP'
 
 sudo authconfig --enableldap --enableldapauth --ldapserver=ldap://$MASTER_IP:389/ --ldapbasedn="dc=rfd,dc=com" --disablefingerprint --kickstart --update >> /tmp/ldaplog.log
 #ldapsearch -x -b "uid=rfdmaster,ou=people,dc=rfd,dc=com"
+
+###torque general installation
+/home/mnt/torque-package-mom-linux-x86_64.sh --install
+sudo cp /home/mnt/pbs_mom /etc/init.d/pbs_mom
+sudo /etc/init.d/pbs_mom start
+#echo $(hostname) | ssh {az_user}@{MASTER_NAME} 'cat >> /var/spool/torque/server_priv/nodes'
+#'chkconfig --add pbs_mom'
