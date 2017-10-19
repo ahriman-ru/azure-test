@@ -10,7 +10,7 @@ echo $MASTER_IP >> /tmp/main.log
 echo $MASTER_NAME >> /tmp/main.log
 
 echo 'rfdmaster ALL=(ALL:ALL) ALL' | sudo EDITOR='tee -a' visudo
-sudo sh -c 'echo "$MASTER_IP $MASTER_NAME" >> /etc/hosts'
+echo "$MASTER_IP $MASTER_NAME" >> /etc/hosts
 
 echo "AZURE FILES CONFIGURATION:"
 mkdir -p /home/mnt
