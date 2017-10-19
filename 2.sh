@@ -1,12 +1,12 @@
 #!/bin/bash
 declare -r MASTER_IP=$1
 declare -r MASTER_NAME='rfdmaster'
-declare -r MASTER_PASSWORD='todo'
-
+declare -r MASTER_PASSWORD='RFDCkjlysqGfhjkm1'
+declare -r MASTER_USER_NAME='rfdmaster'
 #debug part
-sudo -u rfdmaster touch /tmp/sshlog.log
-sudo -u rfdmaster touch /tmp/ldaplog.log
-sudo -u rfdmaster touch /tmp/main.log
+sudo -u $MASTER_USER_NAME touch /tmp/sshlog.log
+sudo -u $MASTER_USER_NAME touch /tmp/ldaplog.log
+sudo -u $MASTER_USER_NAME touch /tmp/main.log
 
 echo $MASTER_IP >> /tmp/main.log
 echo $MASTER_NAME >> /tmp/main.log
@@ -14,7 +14,7 @@ echo $MASTER_NAME >> /tmp/main.log
 
 ###torque installation
 
-echo 'rfdmaster ALL=(ALL:ALL) ALL' | sudo EDITOR='tee -a' visudo
+echo "$MASTER_USER_NAME ALL=(ALL:ALL) ALL" | sudo EDITOR='tee -a' visudo
 sudo sh -c "echo '$MASTER_IP $MASTER_NAME' >> /etc/hosts"
 
 echo "AZURE FILES CONFIGURATION:"
@@ -26,24 +26,25 @@ echo "SSH CONFIGURATION" >> /tmp/sshlog.log
 #    local -r mykeygen="/home/mnt/myrfd.ssh-keygen.sh"
 #    chmod 755 "${mykeygen}"
 #    sudo sh "${mykeygen}"
-if ! [ -f /home/rfdmaster/.ssh/id_rsa ]; then
-    sudo -u rfdmaster sh -c "ssh-keygen -f /home/rfdmaster/.ssh/id_rsa -t rsa -N ''" >> /tmp/sshlog.log
+if ! [ -f /home/$MASTER_USER_NAME/.ssh/id_rsa ]; then
+    sudo -u $MASTER_USER_NAME sh -c "ssh-keygen -f /home/$MASTER_USER_NAME/.ssh/id_rsa -t rsa -N ''" >> /tmp/sshlog.log
 fi
 # Install sshpass to automate ssh-copy-id action
 #sudo yum install -y epel-release
 #sudo yum install -y sshpass
- sshpass -p RFDCkjlysqGfhjkm1 ssh-copy-id -i /home/rfdmaster/.ssh/id_rsa.pub -o StrictHostKeyChecking=no rfdmaster@$MASTER_IP >> /tmp/sshlog.log
+ sshpass -p $MASTER_PASSWORD ssh-copy-id -i /home/$MASTER_USER_NAME/.ssh/id_rsa.pub -o StrictHostKeyChecking=no $MASTER_USER_NAME@$MASTER_IP >> /tmp/sshlog.log
 echo "DONE"
 
-cat /etc/hosts | sudo sshpass -p RFDCkjlysqGfhjkm1 ssh -StrictHostKeyChecking=no rfdmaster@$MASTER_IP "sudo sh -c 'cat > /etc/hosts'" >> /tmp/sshlog.log
-ssh -o 'StrictHostKeyChecking=no' 'rfdmaster@52.179.6.161'
-ssh -o 'StrictHostKeyChecking=no' '$MASTER_NAME@$MASTER_IP'
+cat /etc/hosts | sudo sshpass -p $MASTER_PASSWORD ssh -StrictHostKeyChecking=no $MASTER_USER_NAME@$MASTER_IP "sudo sh -c 'cat > /etc/hosts'" >> /tmp/sshlog.log
+sudo cp /home/mnt/config /home/$MASTER_USER_NAME/.ssh/config
+sudo chmod 400 /home/$MASTER_USER_NAME/.ssh/config
+sudo chown rfdmaster /home/$MASTER_USER_NAME/.ssh/config
 
 sudo authconfig --enableldap --enableldapauth --ldapserver=ldap://$MASTER_IP:389/ --ldapbasedn="dc=rfd,dc=com" --disablefingerprint --kickstart --update >> /tmp/ldaplog.log
-#ldapsearch -x -b "uid=rfdmaster,ou=people,dc=rfd,dc=com"
+#ldapsearch -x -b "uid=$MASTER_USER_NAME,ou=people,dc=rfd,dc=com"
 
 ###torque general installation
-/home/mnt/torque-package-mom-linux-x86_64.sh --install
+sudo /home/mnt/torque-package-mom-linux-x86_64.sh --install
 sudo cp /home/mnt/pbs_mom /etc/init.d/pbs_mom
 sudo /etc/init.d/pbs_mom start
 #echo $(hostname) | ssh {az_user}@{MASTER_NAME} 'cat >> /var/spool/torque/server_priv/nodes'
